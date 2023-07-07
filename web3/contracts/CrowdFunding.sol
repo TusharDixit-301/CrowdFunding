@@ -17,6 +17,16 @@ contract CrowdFunding {
     mapping(uint256 => Campaign) public campaigns;
     uint256 public numberOfCampaigns = 0;
 
+    /**
+     * @notice Creates a new campaign with the given parameters and returns the index of the created campaign.
+     * @param _owner The address of the campaign owner.
+     * @param _title The title of the campaign.
+     * @param _description The description of the campaign.
+     * @param _target The target amount to be raised in the campaign.
+     * @param _deadline The deadline for the campaign in UNIX timestamp format.
+     * @param _image The image associated with the campaign.
+     * @return The index of the created campaign in the storage.
+     */
     function createCampaign(
         address _owner,
         string memory _title,
@@ -43,6 +53,10 @@ contract CrowdFunding {
         return numberOfCampaigns - 1;
     }
 
+    /**
+     * @notice Allows a user to donate funds to a specific campaign identified by its ID.
+     * @param _id The ID of the campaign to donate to.
+     */
     function donateToCampaign(uint256 _id) public payable {
         uint256 amount = msg.value;
         Campaign storage campaign = campaigns[_id];
@@ -57,11 +71,22 @@ contract CrowdFunding {
         }
     }
 
+    /**
+     * @notice Retrieves the list of donators and their corresponding donation amounts for a specific campaign.
+     * @param _id The ID of the campaign to retrieve donators from.
+     * @return An array of addresses representing the donators and an array of uint256 representing the corresponding donation amounts.
+     */
+
     function getDonators(
         uint256 _id
     ) public view returns (address[] memory, uint256[] memory) {
         return (campaigns[_id].donators, campaigns[_id].donations);
     }
+
+    /**
+     * @notice Retrieves an array of all campaigns stored in the contract.
+     * @return An array of Campaign structures representing all the campaigns.
+     */
 
     function getCampaigns() public view returns (Campaign[] memory) {
         Campaign[] memory campaignsArray = new Campaign[](numberOfCampaigns);
